@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  let navigate=useNavigate();
   const [role, setRole] = useState("doctor");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -69,7 +71,7 @@ const Login = () => {
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-4">
-          Don’t have an account? <span className="text-blue-600 cursor-pointer">Sign up</span>
+          Don’t have an account? <span className="text-blue-600 cursor-pointer" onClick={()=>navigate('/signup')}>Sign up</span>
         </p>
       </div>
     </div>

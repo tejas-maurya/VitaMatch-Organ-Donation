@@ -1,4 +1,3 @@
-const { JWT_SECRET } = require("../config/serverConfig");
 const User = require("../models/User");
 const DoctorService = require("../services/doctorService");
 const jwt = require('jsonwebtoken');

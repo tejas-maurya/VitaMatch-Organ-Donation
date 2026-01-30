@@ -42,7 +42,7 @@ const requestedOrganSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["WAITING", "MATCHED", "TRANSPLANTED", "CANCELLED"],
+        enum: ["WAITING", "MATCHED", "PENDING_CONFIRMATION","TRANSPLANTED", "CANCELLED"],
         default: "WAITING"
     }
 }, { timestamps: true });

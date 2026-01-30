@@ -10,6 +10,8 @@ const createDonation = async (req,res) => {
         }
         const donorId = req.user.id;
         const role = req.user.role;
+        const organName = req.body.organName;
+        const bloodGroup = req.body.bloodGroup;
         const donateOrgan = await donorServ.createDonation({
             organName,bloodGroup,donorId,role
         })
@@ -26,7 +28,6 @@ const createDonation = async (req,res) => {
             data : {},
             succes : false,
             message : 'Request Failed',
-            message : 'Not able to add organ for donation',
             err : error
         })
     }
@@ -47,7 +48,12 @@ const confirmDonation = async(req,res) => {
 
     } catch (error) {
         console.log(error);
-        throw error;
+        return res.status(500).json({
+            data : {},
+            succes : false,
+            message : 'Request Failed',
+            err : error
+        })
     }
 }
 
@@ -56,15 +62,26 @@ const findAllRequests = async (req,res) => {
         const bloodGroup = req.body.bloodGroup;
         const organName = req.body.organName;
         const requests = await donorServ.findAllRequests({bloodGroup,organName})
-        return requests;
+        return res.status(201).json({
+            data : requests,
+            success:true,
+            messgae:'Successfully fetched all',
+            err : {}
+        })
+
     } catch (error) {
         console.log(error);
-        throw error;
+        return res.status(500).json({
+            data : {},
+            succes : false,
+            message : 'Request Failed',
+            err : error
+        })
     }
 }
 
 const confirmAllocation = async (req, res) => {
-  const allocation = await DonorService.confirmAllocation(req.params.id);
+  const allocation = await donorServ.confirmAllocation(req.params.id);
   res.json({ success: true, allocation });
 };
 
@@ -73,10 +90,34 @@ const rejectAllocation = async (req, res) => {
   res.json({ success: true, allocation });
 };
 
+const findAll = async (req,res) => {
+    try {
+        if(!req.user){
+            throw new Error('Not Authenticated');
+        }
+        const all = await donorServ.findAll(req.user.id);
+        return res.status(201).json({
+            message : 'Successfully fetched all',
+            data : all ,
+            err : {},
+            success : true
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            data : {},
+            succes : false,
+            message : 'Request Failed',
+            err : error
+        })
+    }
+}
+
 module.exports = {
     createDonation,
     confirmDonation,
     findAllRequests,
     rejectAllocation,
-    confirmAllocation
+    confirmAllocation,
+    findAll
 }

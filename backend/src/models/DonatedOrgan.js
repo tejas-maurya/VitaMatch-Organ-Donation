@@ -37,7 +37,7 @@ const donatedOrganSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["PENDING_CONSENT","AVAILABLE", "ALLOCATED", "TRANSPLANTED", "EXPIRED"],
+        enum: ["PENDING_CONSENT","AVAILABLE", "RESERVED" , "ALLOCATED", "TRANSPLANTED", "EXPIRED"],
         default: "PENDING_CONSENT"
     },
     allocationId : {

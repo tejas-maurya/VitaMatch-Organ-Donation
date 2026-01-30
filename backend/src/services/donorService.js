@@ -5,6 +5,7 @@ const DonorRepository = require("../repository/donorRepo");
 const requestOrgan = require("../repository/doctorRepo");
 const userRepository = require("../repository/userRepo");
 const Notification = require("../models/Notification");
+const DonatedOrgan = require("../models/DonatedOrgan");
 
 class DonorService {
     constructor(){
@@ -23,7 +24,7 @@ class DonorService {
       }
     }
 
-    async confirmDonation(donatedOrganId) {
+    async confirmDonation(donatedOrganId,donorId,consentType) {
       try {
         const confirmed = await this.DonorRepository.confirmDonation(donatedOrganId,donorId,consentType);
         return confirmed;
@@ -86,6 +87,16 @@ class DonorService {
     });
 
     return allocation;
+  }
+
+  async findAll(donorId){
+    try {
+      const all = await this.DonorRepository.findAll(donorId);
+      return all;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
 }

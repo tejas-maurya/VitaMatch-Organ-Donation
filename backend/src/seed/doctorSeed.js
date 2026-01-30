@@ -1,38 +1,67 @@
-const mongoose= require('mongoose');
-const dbConnect =require('../config/db');
-const User = require('../models/User')
-const Hospital =require("../models/Hospital")
+const dbConnect = require('../config/db');
+const Hospital = require("../models/Hospital");
+const User = require("../models/User");
 
-const seedDoctor = async () => {
+const firstNames = ["Arjun", "Meera", "Rohan", "Ananya", "Vikram", "Priya", "Kabir", "Isha"];
+const lastNames = ["Sharma", "Verma", "Reddy", "Patel", "Nair", "Gupta", "Kapoor", "Menon"];
+
+const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+const hospitalsData = [
+  { name: "AIIMS Delhi", address: "New Delhi" },
+  { name: "Apollo Hospitals", address: "Chennai" },
+  { name: "Fortis Memorial", address: "Gurgaon" },
+  { name: "Manipal Hospitals", address: "Bangalore" },
+  { name: "Tata Memorial Hospital", address: "Mumbai" }
+];
+
+const seed = async () => {
   try {
-    // Find a hospital to assign doctor
-    const hospital = await Hospital.findOne({ name: "AIIMS Delhi" });
+    await dbConnect();
 
-    if (!hospital) {
-      throw new Error("Hospital not found. Seed hospitals first.");
+    // Clear old data
+    await Hospital.deleteMany();
+    await User.deleteMany({ role: "DOCTOR" });
+
+    for (const hosp of hospitalsData) {
+
+      const hospital = await Hospital.create({
+        ...hosp,
+        doctor: [],
+        request: [],
+        donate: []
+      });
+
+      const numDoctors = Math.floor(Math.random() * 2) + 2; // 2–3 doctors
+
+      for (let i = 0; i < numDoctors; i++) {
+
+        const first = getRandom(firstNames);
+        const last = getRandom(lastNames);
+
+        const doctor = await User.create({
+          name: `Dr. ${first} ${last}`,
+          email: `${first.toLowerCase()}${last.toLowerCase()}@vitamatch.com`,
+          password: "doctor123",
+          role: "DOCTOR",
+          hospitalId: hospital._id,
+          phoneNumber: 9000000000 + Math.floor(Math.random() * 1000),
+          address: hospital.address
+        });
+
+        hospital.doctor.push(doctor._id);
+      }
+
+      await hospital.save();
     }
 
-    // Remove old doctor if exists
-    await User.deleteOne({ email: "doctor@vitamatch.com" });
-
-    const doctor = await User.create({
-      name: "Dr. Arjun Mehta",
-      email: "doctor@vitamatch.com",
-      password: "doctor123", // Will be auto-hashed
-      role: "DOCTOR",
-      hospitalId: hospital._id,
-      phoneNumber: 9876543210,
-      address: "AIIMS Campus, New Delhi"
-    });
-
-    console.log("Doctor created:", doctor.email);
+    console.log("🏥 Hospitals & Doctors seeded successfully");
     process.exit();
 
   } catch (error) {
-    console.error(error);
+    console.error("❌ ERROR:", error.message);
     process.exit(1);
   }
 };
 
-dbConnect()
-seedDoctor();
+seed();

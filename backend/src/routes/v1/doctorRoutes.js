@@ -3,9 +3,9 @@ const router = express.Router();
 const doctorController = require('../../controllers/doctorController');
 const {authMiddleware} = require('../../middleware/auth');
 
-router.post('/requestOrgan',authMiddleware,doctorController.requestOrgan);
-router.get('/availableOrgans',authMiddleware,doctorController.findAllAvailable);
-router.post("/accept-organ", authMiddleware, doctorController.acceptOrgan);
+router.post('/requestOrgan',authMiddleware,doctorController.requestOrgan); // working fine
+router.get('/availableOrgans',authMiddleware,doctorController.findAllAvailable); //working fine
+router.post("/accept-organ", authMiddleware, doctorController.acceptOrgan); // working fine
 
 
 
